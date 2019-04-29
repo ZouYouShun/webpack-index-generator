@@ -1,0 +1,33 @@
+{
+  "name": "webpack-index-generator",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "clean": "rimraf package-lock.json node_modules",
+    "cleanAndUpdate": "npm run clean && ncu -a &&  ncu -d -a && npm install",
+    "build-w": "tsc -w",
+    "start": "npm run build-w",
+    "test": "webpack --config webpack.config.build.js --progress --colors -w",
+    "build": "webpack --config webpack.config.js --progress --colors -w"
+  },
+  "devDependencies": {
+    "awesome-typescript-loader": "^5.2.1",
+    "concurrently": "^4.1.0",
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.1",
+    "webpack-node-externals": "^1.7.2",
+    "typescript": "^3.4.5",
+    "ts-loader": "^5.4.4",
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1"
+  },
+  "dependencies": {
+    "@types/chokidar": "^2.1.3",
+    "@types/shelljs": "^0.8.5",
+    "chokidar": "^2.1.5",
+    "fs-extra": "^7.0.1",
+    "shelljs": "^0.8.3"
+  },
+  "author": "",
+  "license": "MIT"
+}
