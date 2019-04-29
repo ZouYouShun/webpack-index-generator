@@ -6,11 +6,11 @@ import * as shell from 'shelljs';
 import { bindDebonce } from './libs';
 
 interface IndexGeneratorOptions {
+  // the path of watch dir
   dir?: string[] | string;
 }
 
-// import * as fs from 'fs';
-class App {
+class IndexGenerator {
 
   debonce = bindDebonce(this, 50);
   chunkVersions = {};
@@ -35,22 +35,12 @@ class App {
       return;
     }
 
-
-    // if (type === 'add') {
-    //   if (!fs.readFileSync(url).toString().includes('export default')) {
-    //     this.notExportTemp.push(url);
-    //     return;
-    //   }
-    // }
-
     this.debonce(() => {
-      // this.watcher.unwatch(this.targetUrl);
       console.log(chalk.blue(`${type} file: `) + url);
       const target = path.dirname(path.resolve(url));
       //  --color always` https://github.com/shelljs/shelljs/issues/86
       const cmd = `alang g i ${target} --js --force --color=always`;
       shell.exec(cmd);
-      // this.watcher.add(this.targetUrl);
     });
   }
 
@@ -72,14 +62,8 @@ class App {
         .on('unlink', (url) => this.fileWrite('unlink', url))
         .on('error', (error) => { console.error('Error happened', error); })
     });
-
-    // compiler.hooks.beforeCompile.tapAsync('IndexGenerator', (params, callback) => {
-    //   callback();
-    // });
-    // 
-
   }
 
 }
 
-module.exports = App;
+module.exports = IndexGenerator;

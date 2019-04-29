@@ -1,0 +1,12 @@
+{
+  "move": {
+    "target": "dist",
+    "files": [
+      "README.md",
+      {
+        "from": "package.prod.json",
+        "to": "package.json"
+      }
+    ]
+  }
+}

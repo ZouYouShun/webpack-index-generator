@@ -2,7 +2,7 @@ var nodeExternals = require('webpack-node-externals');
 var webpack = require('webpack');
 var path = require('path');
 var fs = require('fs');
-var App = require('./dist');
+var IndexGenerator = require('./dist');
 
 const config = {
   mode: 'development',
@@ -20,7 +20,7 @@ const config = {
     ]
   },
   plugins: [
-    new App({
+    new IndexGenerator({
       dir: [
         './cool'
       ]

@@ -1,0 +1,21 @@
+{
+  "name": "webpack-index-generator",
+  "version": "0.0.1-alpha",
+  "description": "Generate index.js make only one entrance.",
+  "main": "index.js",
+  "repository": {
+  },
+  "keywords": [
+    "webpack",
+    "webpack-plugin",
+    "index"
+  ],
+  "author": "AlanZou",
+  "license": "MIT",
+  "bugs": {
+  },
+  "dependencies": {
+    "chokidar": "^2.1.5",
+    "shelljs": "^0.8.3"
+  }
+}
