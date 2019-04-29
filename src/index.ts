@@ -5,6 +5,10 @@ import * as shell from 'shelljs';
 
 import { bindDebonce } from './libs';
 
+interface IndexGeneratorOptions {
+  dir?: string[] | string;
+}
+
 // import * as fs from 'fs';
 class App {
 
@@ -12,11 +16,11 @@ class App {
   chunkVersions = {};
   watcher: chokidar.FSWatcher;
 
-  targetUrl = '';
+  targetUrl: string[] | string;
 
   notExportTemp = [];
 
-  constructor() { }
+  constructor(private options: IndexGeneratorOptions = {}) { }
 
   fileWrite = (type: string, url: string) => {
 
@@ -53,9 +57,9 @@ class App {
   apply(compiler) {
     compiler.hooks.entryOption.tap('IndexGenerator', (context, entry) => {
 
-      this.targetUrl = path.dirname(entry);
+      this.targetUrl = this.options.dir || path.dirname(entry);
 
-      // console.log(this.targetUrl);
+      console.log(this.targetUrl);
 
       this.watcher = chokidar.watch(this.targetUrl, {
         ignored: /^\./,
@@ -72,7 +76,7 @@ class App {
     // compiler.hooks.beforeCompile.tapAsync('IndexGenerator', (params, callback) => {
     //   callback();
     // });
-
+    // 
 
   }
 

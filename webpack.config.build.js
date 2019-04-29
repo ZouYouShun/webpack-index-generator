@@ -8,6 +8,11 @@ const config = {
   mode: 'development',
   entry: './example/index.js',
   target: 'node',
+  output: {
+    // Puts the output at the root of the dist folder
+    path: path.join(__dirname, 'dist2'),
+    filename: 'index.js'
+  },
   resolve: {
     extensions: ['.ts', '.js'],
     modules: [
@@ -15,7 +20,11 @@ const config = {
     ]
   },
   plugins: [
-    new App(),
+    new App({
+      dir: [
+        './cool'
+      ]
+    }),
   ],
   externals: [nodeExternals()]
 };
