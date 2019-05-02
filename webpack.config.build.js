@@ -20,11 +20,7 @@ const config = {
     ]
   },
   plugins: [
-    new IndexGenerator({
-      dir: [
-        './cool'
-      ]
-    }),
+    new IndexGenerator(),
   ],
   externals: [nodeExternals()]
 };
