@@ -15,14 +15,21 @@ class IndexGenerator {
   debonce = bindDebonce(this, 50);
   chunkVersions = {};
   watcher: chokidar.FSWatcher;
+  watchers: chokidar.FSWatcher[];
 
   targetUrl: string[] | string;
+
+  skip = true;
 
   notExportTemp = [];
 
   constructor(private options: IndexGeneratorOptions = {}) { }
 
-  fileWrite = (type: string, url: string) => {
+  fileWrite = (type: string, url: string, ignore: string) => {
+
+    if (this.skip) {
+      return;
+    }
 
     const ext = 'js';
 
@@ -39,7 +46,8 @@ class IndexGenerator {
       console.log(chalk.blue(`${type} file: `) + url);
       const target = path.dirname(path.resolve(url));
       //  --color always` https://github.com/shelljs/shelljs/issues/86
-      const cmd = `alang g i ${target} --js --force --color=always`;
+      const cmd = `alang g i ${target} --js --force --ignore=${ignore} --color=always`;
+      // console.log(cmd);
       shell.exec(cmd);
     });
   }
@@ -49,21 +57,39 @@ class IndexGenerator {
 
       this.targetUrl = this.options.dir || path.dirname(entry);
 
-      console.log(this.targetUrl);
 
-      this.watcher = chokidar.watch(this.targetUrl, {
-        ignored: /^\./,
-        persistent: true,
-      });
+      if (!(this.targetUrl instanceof Array)) {
+        this.bindWatcher(this.targetUrl);
 
-      this.watcher
-        .on('add', (url) => this.fileWrite('add', url))
-        // .on('change', (url) => this.fileWrite('change', url))
-        .on('unlink', (url) => this.fileWrite('unlink', url))
-        .on('error', (error) => { console.error('Error happened', error); })
+      } else {
+        this.targetUrl.forEach(url => {
+          this.bindWatcher(url);
+        })
+      }
+
     });
+
+
+    compiler.hooks.done.tap('IndexGenerator', (stats) => {
+      this.skip = false;
+    });
+
   }
 
+  private bindWatcher(targetUrl: string) {
+    const ignore = path.join(path.resolve(targetUrl), 'index.ignore.json');
+
+    const watcher = chokidar
+      .watch(targetUrl, {
+        ignored: /^\./,
+        persistent: true,
+      })
+      .on('add', (url) => this.fileWrite('add', url, ignore))
+      // .on('change', (url) => this.fileWrite('change', url))
+      .on('unlink', (url) => this.fileWrite('unlink', url, ignore))
+      .on('error', (error) => { console.error('Error happened', error); });
+    return watcher;
+  }
 }
 
 module.exports = IndexGenerator;
