@@ -3,19 +3,19 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "clean": "rimraf package-lock.json node_modules",
-    "cleanAndUpdate": "npm run clean && ncu -a &&  ncu -d -a && npm install",
+    "reinstall": "rm -rf node_modules && npm install",
     "build:prod": "tsc -p tsconfig.prod.json",
     "build-w": "tsc -w",
     "start": "npm run build-w",
     "test": "webpack --config webpack.config.build.js --progress --colors -w",
-    "build": "webpack --config webpack.config.js --progress --colors -w",
+    "build-plugin": "webpack --config ./src/webpack-index-generator/webpack.config.js --progress --colors -w",
     "deploy": "npm run build:prod && alang h m && cd dist && npm publish"
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.3.1",
     "@types/chokidar": "^2.1.3",
+    "@types/fs-extra": "^8.0.0",
     "@types/shelljs": "^0.8.5",
     "awesome-typescript-loader": "^5.2.1",
     "concurrently": "^4.1.0",
@@ -27,6 +27,8 @@
   },
   "dependencies": {
     "chokidar": "^2.1.5",
+    "fs-extra": "^8.1.0",
+    "ignore": "^5.1.2",
     "shelljs": "^0.8.3"
   },
   "author": "",

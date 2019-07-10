@@ -12,7 +12,7 @@ interface IndexGeneratorOptions {
   dir?: string[] | string;
 }
 
-class IndexGenerator {
+export class IndexGenerator {
 
   debonce = bindDebonce(this, 50);
   chunkVersions = {};
@@ -41,10 +41,7 @@ class IndexGenerator {
       }
 
     });
-    // compiler.hooks.emit.tapAsync(this.constructor.name, (compilation, callback) => {
-    //   console.log('!!!!!emit');
-    //   callback();
-    // });
+
     compiler.hooks.done.tap(this.constructor.name, (stats) => {
       this.skip = false;
     });
@@ -121,5 +118,3 @@ class IndexGenerator {
   }
 
 }
-
-module.exports = IndexGenerator;

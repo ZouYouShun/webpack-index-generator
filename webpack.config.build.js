@@ -2,7 +2,9 @@ var nodeExternals = require('webpack-node-externals');
 var webpack = require('webpack');
 var path = require('path');
 var fs = require('fs');
-var IndexGenerator = require('./dist');
+var IndexGenerator = require('./dist/webpack-index-generator');
+
+console.log(IndexGenerator);
 
 const config = {
   mode: 'development',

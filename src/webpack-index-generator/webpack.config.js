@@ -4,11 +4,11 @@ var path = require('path');
 
 const config = {
   mode: 'development',
-  entry: './src/index.ts',
+  entry: path.join(__dirname, './app/index.ts'),
   target: 'node',
   output: {
     // Puts the output at the root of the dist folder
-    path: path.join(__dirname, 'dist'),
+    path: path.join(__dirname, '../../dist/webpack-index-generator'),
     filename: 'index.js'
   },
   resolve: {
