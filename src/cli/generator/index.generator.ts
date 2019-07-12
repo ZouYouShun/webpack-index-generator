@@ -4,8 +4,6 @@ import ignore from 'ignore';
 import * as os from 'os';
 import * as path from 'path';
 
-import { BaseModel } from '../model';
-
 interface IndexIgnoreOptions {
   exclude: string[];
 }
@@ -15,8 +13,14 @@ const commont = `/*
 */`;
 const space = `${os.EOL}${os.EOL}`;
 
+type IndexGeneratorOptions = {
+  force: boolean;
+  js: boolean;
+  ignore: string;
+};
+
 export class IndexGenerator {
-  _url: string;
+  url: string;
   isforce: boolean;
   isModule: boolean;
   isJs: boolean;
@@ -24,43 +28,21 @@ export class IndexGenerator {
 
   ig = ignore();
 
-  constructor(model: BaseModel) {
-    this._url = model.targetUrl;
+  constructor(target: string, options: IndexGeneratorOptions) {
+    this.url = target;
+    this.isforce = options.force;
+    this.isJs = options.js;
 
-    this.analysisArgs(model);
-  }
+    if (fs.existsSync(options.ignore)) {
+      this.ignore = require(options.ignore);
 
-  private analysisArgs(model: BaseModel) {
-    model.config.forEach((arg) => {
-      if (arg.includes('--force')) {
-        this.isforce = true;
-        return;
-      }
-      if (arg.includes('--m')) {
-        this.isModule = true;
-        return;
-      }
-      if (arg.includes('--js')) {
-        this.isJs = true;
-        return;
-      }
-      if (arg.includes('--ignore=')) {
-        const url = arg.replace('--ignore=', '');
-        if (fs.existsSync(url)) {
-          this.ignore = require(url);
-
-          this.ig.add(this.ignore.exclude);
-
-          // console.log(this.ig.ignores('/i18n/sdf'));
-        }
-        return;
-      }
-    });
+      this.ig.add(this.ignore.exclude);
+    }
   }
 
   createFile(dirUrl?: string) {
     if (!dirUrl) {
-      dirUrl = this._url;
+      dirUrl = this.url;
     }
     const files = fs.readdirSync(dirUrl);
 

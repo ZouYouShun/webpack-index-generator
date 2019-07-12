@@ -1,60 +1,22 @@
-import chalk from 'chalk';
-import * as path from 'path';
+import * as program from 'commander';
 
-import { IndexGenerator } from './generator';
-import { BaseModel } from './model';
+import { GeneratorEntry } from './generator/generator.entry';
 
+export class Cli {
+  action: string;
+  targetUrl: string;
 
-export class App {
-
-  constructor() { this.run(); }
-
-  async run() {
-    try {
-      const totalModel = this.getArgs();
-
-      switch (totalModel.do) {
-        case '-v':
-        case '-V':
-        case '-vession':
-          const pkg = require('./package.json');
-          console.log(pkg.version);
-          break;
-        case '--help':
-          break;
-        case 'g':
-        case 'generate':
-          console.log(chalk.green(`from Url: `) + totalModel.targetUrl);
-
-          switch (totalModel.action) {
-            case 'i':
-            case 'index':
-              await new IndexGenerator(totalModel).createFile();
-              break;
-            default:
-              break;
-          }
-          break;
-        default:
-          break;
-      }
-      console.log(chalk.green('completed!'));
-    } catch (err) {
-      console.log(chalk.red(err));
-    }
-    process.exit();
+  constructor() {
+    this.setVersion();
+    GeneratorEntry.init();
+    program.parse(process.argv);
   }
 
-  private getArgs(): BaseModel {
-    const args = process.argv.slice(2);
-
-    return {
-      do: args[0],
-      action: args[1],
-      targetUrl: path.resolve(args[2] || ''),
-      config: args.slice(3)
-    };
+  private setVersion() {
+    const pkg = require('../../package.json');
+    program
+      .version(pkg.version, '-v, --version')
+      .usage('<command> [options]');
   }
 }
 
-module.exports = new App();
