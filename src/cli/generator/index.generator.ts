@@ -4,7 +4,7 @@ import ignore from 'ignore';
 import * as os from 'os';
 import * as path from 'path';
 
-interface IndexIgnoreOptions {
+export interface IndexIgnoreOptions {
   exclude: string[];
 }
 
@@ -44,12 +44,13 @@ export class IndexGenerator {
     if (!dirUrl) {
       dirUrl = this.url;
     }
-    const files = fs.readdirSync(dirUrl);
+    const filePaths = fs.readdirSync(dirUrl);
 
     const exportContentObj = new Set();
     const importContentObj = new Set();
 
     let hasDirFile = false;
+
     const ext = this.isJs ? 'js' : 'ts';
 
     const targetUrl = path.join(dirUrl, `index.${ext}`);
@@ -57,45 +58,49 @@ export class IndexGenerator {
     const dirName = path.basename(dirUrl);
 
     let exportCount = 0;
-    files.forEach(file => {
-      const fileUrl = path.join(dirUrl, file);
+    filePaths.forEach(filePath => {
+      const absoluteFilePath = path.join(dirUrl, filePath);
 
-      if (this.checkUrlPass(fileUrl)) {
+      if (this.checkPathVariable(absoluteFilePath)) {
         return 0;
       }
 
-      const stats = fs.statSync(fileUrl);
-      const isDir = stats.isDirectory();
+      const status = fs.statSync(absoluteFilePath);
+      const isDir = status.isDirectory();
 
       let currentDirCount = 0;
-      if (file === 'scss') {
+
+      // check the folder is scss, if right skip the folder
+      if (filePath === 'scss') {
         console.log('stop');
       }
+
+      // check is dir
       if (isDir) {
-        currentDirCount = this.createFile(fileUrl);
+        currentDirCount = this.createFile(absoluteFilePath);
         exportCount += currentDirCount;
       } else {
         if (
-          !new RegExp(`\.${ext}$`, 'gi').test(file) ||
-          new RegExp(`\.spec\.${ext}$`, 'gi').test(file) ||
-          new RegExp(`^_`, 'gi').test(file) ||
-          new RegExp(`\.test\.${ext}$`, 'gi').test(file) ||
-          (!this.isJs && new RegExp(`^index\.${ext}$`, 'gi').test(file)) ||
-          (!this.isModule && new RegExp(`\.module\.${ext}$`, 'gi').test(file))
+          !new RegExp(`\.${ext}$`, 'gi').test(filePath) ||
+          new RegExp(`\.spec\.${ext}$`, 'gi').test(filePath) ||
+          new RegExp(`^_`, 'gi').test(filePath) ||
+          new RegExp(`\.test\.${ext}$`, 'gi').test(filePath) ||
+          (!this.isJs && new RegExp(`^index\.${ext}$`, 'gi').test(filePath)) ||
+          (!this.isModule && new RegExp(`\.module\.${ext}$`, 'gi').test(filePath))
         ) {
           return;
         }
-        file = file.replace(new RegExp(`\.${ext}$`, 'gi'), '');
-        if (file === 'index') {
+        filePath = filePath.replace(new RegExp(`\.${ext}$`, 'gi'), '');
+        if (filePath === 'index') {
 
-          const template = fs.readFileSync(fileUrl).toString();
+          const template = fs.readFileSync(absoluteFilePath).toString();
 
           // if there has index and the index has content, create an file with current dir and
           if (!template.includes(commont)) {
             const dirTargetUrl = path.join(dirUrl, `${dirName}.js`);
             if (!fs.existsSync(dirTargetUrl)) {
               fs.writeFileSync(dirTargetUrl, template);
-              console.log(`${chalk.yellow('rename file: ')} ${fileUrl} => ${dirTargetUrl}`);
+              console.log(`${chalk.yellow('rename file: ')} ${absoluteFilePath} => ${dirTargetUrl}`);
             }
             exportCount++;
             importContentObj.add(`import ${dirName} from './${dirName}';`);
@@ -107,27 +112,27 @@ export class IndexGenerator {
 
       if (this.isJs) {
         if (!isDir) {
-          const content = fs.readFileSync(fileUrl).toString();
+          const content = fs.readFileSync(absoluteFilePath).toString();
           if (content) {
             if (content.includes('export default')) {
 
-              if (file === dirName) {
-                importContentObj.add(`import ${file} from './${file}';`);
+              if (filePath === dirName) {
+                importContentObj.add(`import ${filePath} from './${filePath}';`);
                 hasDirFile = true;
               } else {
-                exportContentObj.add(`export ${file} from './${file}';`);
+                exportContentObj.add(`export ${filePath} from './${filePath}';`);
               }
             } else {
-              exportContentObj.add(`export * from './${file}';`);
+              exportContentObj.add(`export * from './${filePath}';`);
             }
             exportCount++;
           }
         } else if (currentDirCount > 0) {
-          exportContentObj.add(`export ${file} from './${file}';`);
+          exportContentObj.add(`export ${filePath} from './${filePath}';`);
           exportCount++;
         }
       } else {
-        exportContentObj.add(`export * from './${file}';`);
+        exportContentObj.add(`export * from './${filePath}';`);
         exportCount++;
       }
     });
@@ -158,7 +163,7 @@ export class IndexGenerator {
   }
 
 
-  private checkUrlPass(fileUrl: string) {
+  private checkPathVariable(fileUrl: string) {
     let checkUrl = fileUrl;
     if (checkUrl[0] === '/') {
       checkUrl = checkUrl.substring(1);
