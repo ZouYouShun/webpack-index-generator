@@ -7,7 +7,7 @@
     "build:prod": "tsc -p tsconfig.prod.json",
     "build-w": "tsc -w",
     "start": "npm run build-w",
-    "test": "webpack --config webpack.config.build.js --progress --colors -w",
+    "test-plugin": "webpack --config webpack.config.build.js --progress --colors -w",
     "build-plugin": "webpack --config ./src/webpack-index-generator/webpack.config.js --progress --colors -w",
     "deploy": "npm run build:prod && alang h m && cd dist && npm publish"
   },

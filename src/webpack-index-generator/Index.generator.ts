@@ -12,6 +12,8 @@ interface IndexGeneratorOptions {
   dir?: string[] | string;
 }
 
+const command = 'node dist/cli';
+
 export class IndexGenerator {
 
   debonce = bindDebonce(this, 50);
@@ -108,7 +110,7 @@ export class IndexGenerator {
 
         console.log(chalk.blue(`${type} file: `) + url);
         //  --color always` https://github.com/shelljs/shelljs/issues/86
-        const cmd = `alang g i ${targetDir} --js --force --ignore=${ignore} --color=always`;
+        const cmd = `${command} g i ${targetDir} --js --force --ignore=${ignore} --color=always`;
         // console.log(cmd);
         shell.exec(cmd);
         // reconnect the path with current targetUrl
