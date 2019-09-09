@@ -1,5 +1,7 @@
 import * as program from 'commander';
+
 import { IndexGenerator } from './index.generator';
+import { PrettierGenerator } from './prettier.generator';
 
 export class GeneratorEntry {
   static init() {
@@ -15,6 +17,12 @@ export class GeneratorEntry {
           case 'i':
           case 'index':
             new IndexGenerator(target, options).createFile();
+
+            break;
+
+          case 'p':
+          case 'perttier':
+            new PrettierGenerator(target, options).createFile();
 
             break;
 

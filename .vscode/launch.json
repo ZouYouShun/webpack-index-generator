@@ -3,18 +3,40 @@
   // Hover to view descriptions of existing attributes.
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
-  "configurations": [{
-    "type": "node",
-    "request": "launch",
-    "name": "g i",
-    "program": "${workspaceFolder}/dist/cli/index.js",
-    "sourceMaps": true,
-    "args": [
-      "g",
-      "i",
-      "./example",
-      "--js",
-      "--force"
-    ]
-  }]
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "g i",
+      "program": "${workspaceFolder}/dist/cli/index.js",
+      "sourceMaps": true,
+      "args": [
+        "g",
+        "i",
+        "/Users/declan.zou/Project/RC/integration-apps-gitlab/packages/salesforce-cti-widget/src",
+        "--js",
+        "--force",
+        "-p",
+        "/Users/declan.zou/Project/RC/integration-apps-gitlab/.prettierrc.js",
+        "-i",
+        "/Users/declan.zou/Project/RC/integration-apps-gitlab/.indexignore.json"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "g p",
+      "program": "${workspaceFolder}/dist/cli/index.js",
+      "sourceMaps": true,
+      "args": [
+        "g",
+        "p",
+        "/Users/declan.zou/Project/RC/integration-apps-gitlab/packages/salesforce-cti-widget",
+        "-p",
+        "/Users/declan.zou/Project/RC/integration-apps-gitlab/.prettierrc.js",
+        "-i",
+        "/Users/declan.zou/Project/RC/integration-apps-gitlab/.indexignore.json"
+      ]
+    }
+  ]
 }

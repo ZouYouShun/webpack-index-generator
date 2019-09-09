@@ -94,11 +94,9 @@ export class IndexGenerator {
             if (this.hasDefault(content)) {
               importContentObj.add(`import ${filePath} from './${filePath}';`);
               exportObjectContentObj.add(filePath);
+            }
 
-              if (this.checkHasOtherExport(content)) {
-                exportDefaultContentObj.add(`export * from './${filePath}';`);
-              }
-            } else {
+            if (this.checkHasOtherExport(content)) {
               exportDefaultContentObj.add(`export * from './${filePath}';`);
             }
           }
@@ -127,11 +125,13 @@ export class IndexGenerator {
                 absoluteFilePath
               })
             ) {
-              importContentObj.add(`import ${dirName} from './${dirName}';`);
-              exportDefaultContentObj.add(`export default ${dirName};`);
+              if (this.hasDefault(content)) {
+                importContentObj.add(`import ${dirName} from './${dirName}';`);
+                exportDefaultContentObj.add(`export default ${dirName};`);
+              }
 
               if (this.checkHasOtherExport(content)) {
-                exportDefaultContentObj.add(`export * from './${filePath}';`);
+                exportDefaultContentObj.add(`export * from './${dirName}';`);
               }
               exportCount++;
             }
@@ -147,12 +147,9 @@ export class IndexGenerator {
           } else {
             exportObjectContentObj.add(filePath);
           }
+        }
 
-          // check file has other export
-          if (this.checkHasOtherExport(content)) {
-            exportDefaultContentObj.add(`export * from './${filePath}';`);
-          }
-        } else {
+        if (this.checkHasOtherExport(content)) {
           exportDefaultContentObj.add(`export * from './${filePath}';`);
         }
         exportCount++;
@@ -243,6 +240,7 @@ export class IndexGenerator {
     );
   }
 }
+
 function exportObject(exportObjectContentObj: Set<unknown>) {
   return exportObjectContentObj.size > 0
     ? `export {
