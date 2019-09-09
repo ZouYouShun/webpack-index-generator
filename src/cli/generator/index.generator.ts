@@ -82,19 +82,21 @@ export class IndexGenerator {
         exportCount += currentDirCount;
 
         if (exportCount > 0) {
-          const content = fs
-            .readFileSync(path.join(absoluteFilePath, `index.${ext}`))
-            .toString();
+          const dirIndex = path.join(absoluteFilePath, `index.${ext}`);
 
-          if (this.hasDefault(content)) {
-            importContentObj.add(`import ${filePath} from './${filePath}';`);
-            exportObjectContentObj.add(filePath);
+          if (fs.existsSync(dirIndex)) {
+            const content = fs.readFileSync(dirIndex).toString();
 
-            if (this.checkHasOtherExport(content)) {
+            if (this.hasDefault(content)) {
+              importContentObj.add(`import ${filePath} from './${filePath}';`);
+              exportObjectContentObj.add(filePath);
+
+              if (this.checkHasOtherExport(content)) {
+                exportDefaultContentObj.add(`export * from './${filePath}';`);
+              }
+            } else {
               exportDefaultContentObj.add(`export * from './${filePath}';`);
             }
-          } else {
-            exportDefaultContentObj.add(`export * from './${filePath}';`);
           }
         }
       } else {
@@ -112,20 +114,22 @@ export class IndexGenerator {
         if (filePath === 'index') {
           // if there has index and the index has content, create an file with current dir and
           if (!content.includes(commont)) {
-            this.convertIndexToFile({
-              dirUrl,
-              dirName,
-              ext,
-              template: content,
-              absoluteFilePath
-            });
-            exportCount++;
+            if (
+              this.convertIndexToFile({
+                dirUrl,
+                dirName,
+                ext,
+                template: content,
+                absoluteFilePath
+              })
+            ) {
+              importContentObj.add(`import ${dirName} from './${dirName}';`);
+              exportDefaultContentObj.add(`export default ${dirName};`);
 
-            importContentObj.add(`import ${dirName} from './${dirName}';`);
-            exportDefaultContentObj.add(`export default ${dirName};`);
-
-            if (this.checkHasOtherExport(content)) {
-              exportDefaultContentObj.add(`export * from './${filePath}';`);
+              if (this.checkHasOtherExport(content)) {
+                exportDefaultContentObj.add(`export * from './${filePath}';`);
+              }
+              exportCount++;
             }
           }
           return exportCount;
@@ -202,6 +206,9 @@ export class IndexGenerator {
           'rename file: '
         )} ${absoluteFilePath} => ${dirTargetUrl}`
       );
+      return true;
+    } else {
+      return false;
     }
   }
 
