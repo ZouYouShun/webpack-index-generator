@@ -3,6 +3,7 @@ import * as fs from 'fs-extra';
 import ignore from 'ignore';
 import * as os from 'os';
 import * as path from 'path';
+import * as prettier from 'prettier';
 
 export interface IndexIgnoreOptions {
   exclude: string[];
@@ -15,6 +16,7 @@ type IndexGeneratorOptions = {
   force: boolean;
   js: boolean;
   ignore: string;
+  perttierConfig: string;
 };
 
 type ConvertOptions = {
@@ -31,6 +33,7 @@ export class IndexGenerator {
   isModule: boolean;
   isJs: boolean;
   ignore: IndexIgnoreOptions;
+  perttierPath: string;
 
   ig = ignore();
 
@@ -38,6 +41,7 @@ export class IndexGenerator {
     this.url = target;
     this.isforce = options.force;
     this.isJs = options.js;
+    this.perttierPath = options.perttierConfig;
 
     if (fs.existsSync(options.ignore)) {
       this.ignore = require(options.ignore);
@@ -166,16 +170,22 @@ export class IndexGenerator {
         console.log(`${chalk.green('create ')} ${targetUrl}`);
       }
 
-      fs.writeFileSync(
-        targetUrl,
+      const perttierConfig = require(this.perttierPath);
+
+      const result = prettier.format(
         commont +
           os.EOL +
           [...importContentObj].join(os.EOL) +
           os.EOL +
           exportObject(exportObjectContentObj) +
           os.EOL +
-          [...exportDefaultContentObj].join(os.EOL)
+          [...exportDefaultContentObj].join(os.EOL),
+        {
+          parser: 'babel',
+          ...perttierConfig
+        }
       );
+      fs.writeFileSync(targetUrl, result);
     }
 
     return exportCount;
