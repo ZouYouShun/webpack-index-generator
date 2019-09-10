@@ -22,7 +22,9 @@ export class GeneratorEntry {
 
           case 'p':
           case 'perttier':
-            new PrettierGenerator(target, options).createFile();
+            const errors = new PrettierGenerator(target, options).createFile();
+
+            console.log(JSON.stringify(errors, undefined, 2));
 
             break;
 

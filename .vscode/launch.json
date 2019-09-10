@@ -13,13 +13,30 @@
       "args": [
         "g",
         "i",
-        "/Users/declan.zou/Project/RC/integration-apps-gitlab/packages/salesforce-cti-widget/src",
+        "/Users/declan.zou/Project/RC/integration-apps/packages/dynamics",
         "--js",
         "--force",
         "-p",
-        "/Users/declan.zou/Project/RC/integration-apps-gitlab/.prettierrc.js",
+        "/Users/declan.zou/Project/RC/integration-apps/.prettierrc.js",
         "-i",
-        "/Users/declan.zou/Project/RC/integration-apps-gitlab/.indexignore.json"
+        "/Users/declan.zou/Project/RC/integration-apps/.indexignore.json"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "g i ts",
+      "program": "${workspaceFolder}/dist/cli/index.js",
+      "sourceMaps": true,
+      "args": [
+        "g",
+        "i",
+        "example/containers",
+        "--force",
+        "-p",
+        "/Users/declan.zou/Project/RC/integration-apps/.prettierrc.js",
+        "-i",
+        "/Users/declan.zou/Project/RC/integration-apps/.indexignore.json"
       ]
     },
     {
@@ -31,11 +48,11 @@
       "args": [
         "g",
         "p",
-        "/Users/declan.zou/Project/RC/integration-apps-gitlab/packages/salesforce-cti-widget",
+        "/Users/declan.zou/Project/RC/integration-apps/packages/engage-voice-widget/modules/MainViewUI",
         "-p",
-        "/Users/declan.zou/Project/RC/integration-apps-gitlab/.prettierrc.js",
+        "/Users/declan.zou/Project/RC/integration-apps/.prettierrc.js",
         "-i",
-        "/Users/declan.zou/Project/RC/integration-apps-gitlab/.indexignore.json"
+        "/Users/declan.zou/Project/RC/integration-apps/.indexignore.json"
       ]
     }
   ]
