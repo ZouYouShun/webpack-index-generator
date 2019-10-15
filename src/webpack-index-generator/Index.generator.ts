@@ -15,7 +15,6 @@ interface IndexGeneratorOptions {
 const command = 'node dist/cli';
 
 export class IndexGenerator {
-
   debonce = bindDebonce(this, 50);
   chunkVersions = {};
 
@@ -25,56 +24,58 @@ export class IndexGenerator {
 
   notExportTemp = [];
 
-  constructor(private options: IndexGeneratorOptions = {}) { }
+  constructor(private options: IndexGeneratorOptions = {}) {}
 
   apply(compiler) {
     compiler.hooks.entryOption.tap(this.constructor.name, (context, entry) => {
-
       this.targetUrl = this.options.dir || path.dirname(entry);
-
 
       if (!(this.targetUrl instanceof Array)) {
         this.bindWatcher(this.targetUrl);
-
       } else {
         this.targetUrl.forEach(url => {
           this.bindWatcher(url);
-        })
+        });
       }
-
     });
 
-    compiler.hooks.done.tap(this.constructor.name, (stats) => {
+    compiler.hooks.done.tap(this.constructor.name, stats => {
       this.skip = false;
     });
-
   }
 
   private bindWatcher(targetUrl: string) {
     const ignore = path.join(path.resolve(targetUrl), 'index.ignore.json');
 
-    const watcher = chokidar
-      .watch(targetUrl, {
-        ignored: /^\./,
-        persistent: true,
-      });
+    const watcher = chokidar.watch(targetUrl, {
+      ignored: /^\./,
+      persistent: true
+    });
 
     const handler = this.handler(ignore, watcher, targetUrl);
 
     watcher
-      .on('add', (url) => handler('add', url))
-      .on('change', (url) => handler('change', url))
-      .on('unlink', (url) => handler('unlink', url))
-      .on('error', (error) => { console.error('Error happened', error); });
+      .on('add', url => handler('add', url))
+      .on('change', url => handler('change', url))
+      .on('unlink', url => handler('unlink', url))
+      .on('error', error => {
+        console.error('Error happened', error);
+      });
 
     return watcher;
   }
 
-  private handler(ignore: string, watcher: chokidar.FSWatcher, targetUrl: string) {
+  private handler(
+    ignore: string,
+    watcher: chokidar.FSWatcher,
+    targetUrl: string
+  ) {
     const ext = 'js';
 
     return (type: string, url: string) => {
-      if (this.skip) { return; }
+      if (this.skip) {
+        return;
+      }
 
       if (
         !new RegExp(`\.${ext}$`, 'gi').test(url) ||
@@ -93,13 +94,17 @@ export class IndexGenerator {
         case 'add': {
           const content = fs.readFileSync(url).toString();
 
-          if (!content.includes('export')) { return; }
+          if (!content.includes('export')) {
+            return;
+          }
         }
         case 'change': {
           const indexUrl = path.join(targetDir, 'index.js');
           if (fs.existsSync(indexUrl)) {
             const content = fs.readFileSync(indexUrl).toString();
-            if (content.includes(fileName)) { return; }
+            if (content.includes(fileName)) {
+              return;
+            }
           }
         }
       }
@@ -118,5 +123,4 @@ export class IndexGenerator {
       });
     };
   }
-
 }

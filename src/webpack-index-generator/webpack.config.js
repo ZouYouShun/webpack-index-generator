@@ -12,13 +12,9 @@ const config = {
     filename: 'index.js'
   },
   resolve: {
-    alias: {
-    },
+    alias: {},
     extensions: ['.ts', '.js'],
-    modules: [
-      'node_modules',
-      'src',
-    ]
+    modules: ['node_modules', 'src']
   },
   plugins: [
     new webpack.LoaderOptionsPlugin({
@@ -33,13 +29,15 @@ const config = {
           failOnHint: true
         }
       }
-    }),
+    })
   ],
   module: {
-    rules: [{
-      test: /\.ts$/,
-      use: 'awesome-typescript-loader'
-    }]
+    rules: [
+      {
+        test: /\.ts$/,
+        use: 'awesome-typescript-loader'
+      }
+    ]
   },
   externals: [nodeExternals()]
 };
@@ -49,4 +47,4 @@ module.exports = (env, argv) => {
     config.devtool = 'source-map';
   }
   return config;
-}
+};

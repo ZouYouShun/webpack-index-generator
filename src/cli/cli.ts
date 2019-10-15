@@ -14,9 +14,6 @@ export class Cli {
 
   private setVersion() {
     const pkg = require('../../package.json');
-    program
-      .version(pkg.version, '-v, --version')
-      .usage('<command> [options]');
+    program.version(pkg.version, '-v, --version').usage('<command> [options]');
   }
 }
-
