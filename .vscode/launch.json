@@ -13,7 +13,7 @@
       "args": [
         "g",
         "i",
-        "/Users/declan.zou/Project/RC/integration-apps/packages/dynamics",
+        "/Users/declan.zou/Project/RC/integration-apps/packages/salesforce-cti-widget",
         "--js",
         "--force",
         "-p",
@@ -42,17 +42,15 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "g p",
+      "name": "g perttier",
       "program": "${workspaceFolder}/dist/cli/index.js",
       "sourceMaps": true,
       "args": [
         "g",
-        "p",
-        "/Users/declan.zou/Project/RC/integration-apps/packages/engage-voice-widget/modules/MainViewUI",
+        "perttier",
+        "/Users/declan.zou/Project/RC/webpack-index-generator/src",
         "-p",
-        "/Users/declan.zou/Project/RC/integration-apps/.prettierrc.js",
-        "-i",
-        "/Users/declan.zou/Project/RC/integration-apps/.indexignore.json"
+        "/Users/declan.zou/Project/RC/webpack-index-generator/.prettierrc.js"
       ]
     }
   ]
