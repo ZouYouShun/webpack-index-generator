@@ -12,6 +12,7 @@ export class GeneratorEntry {
       .option('-i, --ignore [ignorePath]', 'Is run update force')
       .option('-p, --perttier-config [perttierConfig]', 'perttier config path')
       .option('-js, --js', 'Is js mode')
+      .option('-t, --type', 'file type')
       .action((action, target, options) => {
         switch (action) {
           case 'i':

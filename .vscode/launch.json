@@ -13,8 +13,7 @@
       "args": [
         "g",
         "i",
-        "/Users/declan.zou/Project/RC/integration-apps/packages/salesforce-cti-widget",
-        "--js",
+        "/Users/declan.zou/Project/RC/integration-apps/packages/engage-voice-widget/containers",
         "--force",
         "-p",
         "/Users/declan.zou/Project/RC/integration-apps/.prettierrc.js",
